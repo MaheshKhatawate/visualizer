@@ -145,6 +145,56 @@ export function selectionSort(inputArray) {
     return steps;
 }
 
+//Insertion Sorting algorithm
+export function insertionSort(inputArray){
+    const array = [...inputArray];
+    const steps = [];
+    const n = array.length;
+    
+    // Add initial state
+    steps.push(createStep(array));
+    
+    for (let i = 1; i < n; i++) {
+        let key = array[i];
+        let keyIndex = i;
+        let j = i - 1;
+        
+        // Show the element we're trying to insert (highlight the key)
+        steps.push(createStep(array, [i], [], Array.from({length: i}, (_, idx) => idx)));
+        
+        // Move elements greater than key one position ahead
+        while (j >= 0 && array[j] > key) {
+            // Show comparison between current element and the key
+            steps.push(createStep(array, [j, keyIndex], [], Array.from({length: i}, (_, idx) => idx)));
+            
+            // Show the shift operation (moving element to the right)
+            array[j + 1] = array[j];
+            keyIndex = j; // Update key position as it shifts right
+            
+            // Show state after shift with the key in its new position
+            steps.push(createStep(array, [], [], Array.from({length: i}, (_, idx) => idx)));
+            
+            j = j - 1;
+        }
+        
+        // Insert the key at its correct position
+        array[j + 1] = key;
+        
+        // Show the key being placed in its final position
+        if (j + 1 !== i) {
+            steps.push(createStep(array, [], [j + 1], Array.from({length: i + 1}, (_, idx) => idx)));
+        }
+        
+        // Show final state with this iteration complete
+        steps.push(createStep(array, [], [], Array.from({length: i + 1}, (_, idx) => idx)));
+    }
+    
+    // Final state - all elements sorted
+    steps.push(createStep(array, [], [], Array.from({length: n}, (_, i) => i)));
+    
+    return steps;
+}
+
 // Registry of available sorting algorithms
 export const sortingAlgorithms = {
     'bubble': {
@@ -160,6 +210,13 @@ export const sortingAlgorithms = {
         timeComplexity: 'O(n²)',
         spaceComplexity: 'O(1)',
         description: 'Finds minimum element and places it at the beginning'
+    },
+    'insertion':{
+        name: 'Insertion Sort',
+        function: insertionSort,
+        timeComplexity:'O(n²)',
+        spaceComplexity:'O(1)',
+        description:'Builds the final sorted array one item at a time by inserting each element into its correct position'
     }
     // Add more algorithms here as you implement them
 };
